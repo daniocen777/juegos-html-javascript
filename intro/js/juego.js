@@ -37,7 +37,7 @@ eventoTeclado.sequence_combo("up down a b", ataqueEspecial);
  */
 
 /* --------------------- Lectura del Raton --------------------- */
-var miCanvas;
+/* var miCanvas;
 
 function inicializar() {
   miCanvas = document.getElementById("canvas");
@@ -59,10 +59,10 @@ function posicionRaton(event) {
   var x = event.pageX;
   var y = event.pageY;
   console.log("X: " + x + " -Y: " + y);
-}
+} */
 
 /* --------------------- Objetos --------------------- */
-class Personaje {
+/* class Personaje {
   x = 0;
   y = 0;
   nombre = "personaje";
@@ -83,4 +83,139 @@ personaje2 = new Personaje(522, 313, "Mario");
 
 personaje1.abajo();
 
-console.log(personaje1);
+console.log(personaje1); */
+
+/* --------------------- Canvas --------------------- */
+var canvas;
+var ctx; // Contexto del canvas
+var FPS = 50;
+// Para dibujar una imagen
+var imgRex;
+
+class Protagonista {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.valocidad = 3;
+  }
+
+  dibuja() {
+    ctx.drawImage(imgRex, this.x, this.y);
+  }
+
+  texto() {
+    ctx.font = "30px impact";
+    ctx.fillStyle = "#55555";
+    ctx.fillText("x: " + this.x, 100, 100);
+  }
+
+  arriba() {
+    this.y -= this.valocidad;
+  }
+
+  abajo() {
+    this.y += this.valocidad;
+  }
+
+  izquierda() {
+    this.x -= this.valocidad;
+  }
+
+  derecha() {
+    this.x += this.valocidad;
+  }
+}
+
+class Personaje {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.derecha = true;
+  }
+
+  dibuja() {
+    ctx.fillStyle = "red";
+    ctx.fillRect(this.x, this.y, 50, 50);
+  }
+
+  mueveDerecha() {
+    this.x += 1;
+  }
+
+  mueve(velocidad) {
+    if (this.derecha) {
+      if (this.x < 400) {
+        this.x += velocidad;
+      } else {
+        this.derecha = false;
+      }
+    } else {
+      if (this.x > 50) {
+        this.x -= velocidad;
+      } else {
+        this.derecha = true;
+      }
+    }
+  }
+}
+
+function inicializar() {
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d"); // tipo de visualización de la pantalla
+  imgRex = new Image(30, 30);
+  imgRex.src = "img/erizo.gif"; // Cargando imagen
+  console.log(imgRex);
+  setInterval(function () {
+    principal();
+  }, 1000 / FPS);
+}
+
+function principal() {
+  borrarCanvas();
+  per1.dibuja();
+  per2.dibuja();
+  per3.dibuja();
+
+  per1.mueve(1);
+  per2.mueve(3);
+  per3.mueve(7);
+
+  protagonista.dibuja();
+  protagonista.texto();
+}
+
+// Creando personajes
+var per1 = new Personaje(10, 50);
+var per2 = new Personaje(10, 120);
+var per3 = new Personaje(10, 250);
+// Creando protagonista (rex)
+var protagonista = new Protagonista(200, 200);
+
+function borrarCanvas() {
+  canvas.width = 500;
+  canvas.height = 400;
+}
+
+// Listeners
+document.addEventListener("keydown", function (tecla) {
+  /* console.log(tecla.keyCode); Para saber las teclas */
+  // Arriba
+  if (tecla.keyCode == 38) {
+    protagonista.arriba();
+  }
+
+  // Abajo
+  if (tecla.keyCode == 40) {
+    protagonista.abajo();
+  }
+
+  // Izquierda
+  if (tecla.keyCode == 37) {
+    protagonista.izquierda();
+  }
+
+  // Derecha
+  if (tecla.keyCode == 39) {
+    protagonista.derecha();
+  }
+});
